@@ -1,6 +1,7 @@
 import { Close, Send } from '@mui/icons-material'
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, TextField } from '@mui/material'
 import React from 'react'
+import { login, register } from '../../actions/user'
 import { useValue } from '../../context/ContextProvider'
 import GoogleOneTapLogin from './GoogleOneTapLogin'
 import PasswordField from './PasswordField'
@@ -19,17 +20,21 @@ function Login() {
         dispatch({type:'CLOSE_LOGIN'})
     }
     const handleSubmit = (e) =>{
+        console.log(e)
+        console.log(isRegister)
         e.preventDefault()
         const email = emailRef.current.value
         const password = passwordRef.current.value
-        // send login request if  is not register and returns
+        if(!isRegister) return login({email, password}, dispatch)
 
         const name = nameRef.current.value
         const confirmPassword = confirmPasswordRef.current.value
-        if(password === confirmPassword) {
-            return dispatch({type:'UPDATE_ALERT', severity: 'error', message: "Passwords  do not match"})
+        if(password !== confirmPassword) {
+            console.log("password mismatch")
+            return dispatch({type:'UPDATE_ALERT', payload: {open: true, severity: 'error', message: "Passwords  do not match"}})
         }
-        // send register request
+        console.log("GO TO REGISTER")
+        register({name, email, password}, dispatch)
     }
     React.useEffect(() =>{
         isRegister ? setTitle('Register') : setTitle('Login')

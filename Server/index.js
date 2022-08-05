@@ -19,11 +19,12 @@ app.use(express.json({limit:'10mb'}))
 
 app.use('/room', roomRouter)
 app.use('/user', userRouter)
-app.use('/', (req, res) => res.json({message:'Welcome to our API'}))
+app.get('/', (req, res) => res.json({message:'Welcome to our API'}))
 app.use((req, res) =>res.status(404).json({sucess: false, message: "Not Found"}))
 
 const startServer = async ()=>{
     try {
+        console.log(process.env.MONGO_CONNECT)
         await mongoose.connect(process.env.MONGO_CONNECT)
         app.listen(port, () => console.log(`Server is listening on port: ${port}`))
     } catch (error) {

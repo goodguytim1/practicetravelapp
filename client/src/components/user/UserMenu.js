@@ -4,6 +4,7 @@ import jwtDecode from 'jwt-decode';
 import React from 'react';
 import { useValue } from '../../context/ContextProvider';
 import useCheckToken from '../../hooks/useCheckToken';
+import Profile from './Profile';
 
 const UserMenu = ({ anchorUserMenu, setAnchorUserMenu }) => {
   //useCheckToken()
@@ -11,45 +12,52 @@ const UserMenu = ({ anchorUserMenu, setAnchorUserMenu }) => {
   const handleCloseUserMenu = () => {
     setAnchorUserMenu(null);
   };
-  const testAuthorization = async()=>{
-    const url = process.env.REACT_APP_SERVER_URL + '/room'
-    console.log(currentUser.token)
-    const decodeToken = jwtDecode(currentUser.token)
-        console.log(decodeToken)
-    try {
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: {
-          'CONTENT-TYPE': 'application/json',
-          authorization: `Bearer ${currentUser.token}`
-        }
-      })
-      const data = await response.json()
-      console.log(data)
-      if(!data.success){
-        if(response.status === 401 ) {
-          dispatch({type:'UPDATE_USER', payload: null})
-        }
-        throw new Error(data.message)
-      }
-    } catch (error) {
-      dispatch({type:'UPDATE_ALERT', payload:{open: true, severity: 'error', message: error.message}})
-      console.log(error)
-    }
-  }
+  // const testAuthorization = async()=>{
+  //   const url = process.env.REACT_APP_SERVER_URL + '/room'
+  //   console.log(currentUser.token)
+  //   const decodeToken = jwtDecode(currentUser.token)
+  //       console.log(decodeToken)
+  //   try {
+  //     const response = await fetch(url, {
+  //       method: 'POST',
+  //       headers: {
+  //         'CONTENT-TYPE': 'application/json',
+  //         authorization: `Bearer ${currentUser.token}`
+  //       }
+  //     })
+  //     const data = await response.json()
+  //     console.log(data)
+  //     if(!data.success){
+  //       if(response.status === 401 ) {
+  //         dispatch({type:'UPDATE_USER', payload: null})
+  //       }
+  //       throw new Error(data.message)
+  //     }
+  //   } catch (error) {
+  //     dispatch({type:'UPDATE_ALERT', payload:{open: true, severity: 'error', message: error.message}})
+  //     console.log(error)
+  //   }
+  // }
   return (
+    <>
+    
     <Menu
       anchorEl={anchorUserMenu}
       open={Boolean(anchorUserMenu)}
       onClose={handleCloseUserMenu}
       onClick={handleCloseUserMenu}
     >
-      <MenuItem onClick={testAuthorization}>
-        <ListItemIcon>
-          <Settings fontSize="small" />
-        </ListItemIcon>
-        Profile
+
+      {!currentUser.google && (
+
+      <MenuItem onClick={()=>dispatch({type: "UPDATE_PROFILE", payload: {open: true, file: null, photoURL: currentUser?.photoURL}})}>
+      <ListItemIcon>
+        <Settings fontSize="small" />
+      </ListItemIcon>
+      Profile
       </MenuItem>
+      )}
+    
       <MenuItem
         onClick={() => dispatch({ type: 'UPDATE_USER', payload: null })}
       >
@@ -59,6 +67,8 @@ const UserMenu = ({ anchorUserMenu, setAnchorUserMenu }) => {
         Logout
       </MenuItem>
     </Menu>
+    <Profile/>
+    </>
   );
 };
 

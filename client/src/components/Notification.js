@@ -8,6 +8,7 @@ function Notification() {
         if(reason ==='clickaway')return
         dispatch({type:'UPDATE_ALERT',  payload: {...alert, open: false }})
     }
+    console.log(alert)
   return (
     <Snackbar
     open={alert.open}
