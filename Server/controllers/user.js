@@ -53,6 +53,7 @@ export const login = tryCatch(async(req, res) => {
     //console.log("success")
 })
 
+
 export const updateProfile = tryCatch(async (req, res) => {
     //console.log("update profile")
     //console.log(req.body)
